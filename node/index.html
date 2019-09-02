@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+
+<header>
+<style>
+#myCanvas {
+  height: 600px;
+  width: 1000px;
+  border-style: solid;
+  border-width: 5px;
+}
+</style>
+
+<script src="js/context.js"></script>
+<script src="js/util.js"></script>
+
+<script type="text/javascript">
+
+var context = new Context();
+
+function initiate() {
+  console.log("Chatuba");
+
+  var canvas = document.getElementById('myCanvas');
+  var width = canvas.width;
+  var height = canvas.height;
+
+
+  var ctx = canvas.getContext("2d");
+  ctx.fillStyle = "#FF0000";
+  ctx.fillRect(0, 0, 150, 75);
+
+  console.log("Chatuba: " + width + " " + height);
+  console.log("Time: " + (new Date()).getTime());
+
+  setTimeout(mainLoop, 0, context);
+
+}
+
+function mainLoop(context) {
+  // Do somethind
+  console.log("Inside main loop");
+
+  var canvas = document.getElementById('myCanvas');
+  var ctx = canvas.getContext("2d");
+  ctx.fillStyle = "#FFFF00";
+  ctx.font = "20px Arial";
+  var txt = "Hello World"
+  var measure = ctx.measureText(txt);
+  console.log("Measure: " + measure);
+  ctx.fillText(txt, 10, 50);
+
+  ctx.strokeRect(10, 50, measure.width, -20);
+
+  printTitle(canvas, ctx, getData());
+
+  setTimeout(mainLoop, context.getDelay(), context);
+}
+
+function printTitle(canvas, ctx, data) {
+
+  ctx.fillStyle = data.title.color;
+  ctx.font = data.title.height + "px " + data.title.font;
+
+  var measure = ctx.measureText(data.title.description);
+
+  ctx.fillText(data.title.description, Math.round((canvas.width / 2) - (measure.width / 2)), 5 + data.title.height);
+}
+
+function printData(canvas, ctx, data) {
+
+  var largestLabel = getLargestLabel(canvas, ctx, data);
+
+  var space = canvas.height - data.title.height - 10;
+
+  var i;
+  for (i = 0; i < canvas.data.length; i++) {
+
+  }
+
+
+}
+
+function getLargestLabel(canvas, ctx, data) {
+  var largest = 0;
+
+  ctx.fillStyle = data.axisY.color;
+  ctx.font = data.axisY.height + "px " + data.axisY.font;
+
+  var i;
+  for (i = 0; i < canvas.data.length; i++) {
+    largest = Math.max(largest, ctx.measureText(data.data[i].description).width);
+  }
+
+  return largest;
+}
+
+function getData() {
+  return {
+    "title" : {
+      "description" : "Any Strange Title",
+      "font" : "Arial",
+      "height" : 20,
+      "color" : "green"
+    },
+    axisY : {
+      "font" : "Arial",
+      "height" : 10,
+      "color" : "black"
+    },
+    data : [
+      {
+        "id" : "1",
+        "description" : "Brazil",
+        "value" : 1230,
+        "color" : "red"
+      },
+      {
+        "id" : "2",
+        "description" : "Argentina",
+        "value" : 623,
+        "color" : "green"
+      },
+      {
+        "id" : "3",
+        "description" : "Colombia",
+        "value" : 200,
+        "color" : "blue"
+      },
+    ]
+  };
+}
+
+</script>
+
+</header>
+
+<body onload="initiate()">
+
+
+
+<canvas id="myCanvas"></canvas>
+
+</body>
+</html>

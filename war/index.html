@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<header>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+#myCanvas {
+  // height: 600px;
+  // width: 800px;
+  border-style: solid;
+  border-width: 5px;
+}
+</style>
+
+
+<script>
+var jsFiles = ["js/util.js?ver=",
+  "js/Position.js?ver=",
+  "js/LoopController.js?ver=",
+  "js/Context.js?ver=",
+  "js/Team.js?ver=",
+  "js/DijkstraHelper.js?ver=",
+  "js/DijkstraPathCalculator.js?ver=",
+  "js/Warrior.js?ver=",
+  "js/Timer.js?ver="
+];
+
+var i;
+
+for (i = 0; i < jsFiles.length; i++) {
+  document.write('<script src="' + jsFiles[i] + Math.random() + '"><\/script>');
+}
+</script>
+
+<script type="text/javascript">
+
+var context;
+
+function initiate() {
+  console.log("Chatuba");
+
+  var myCanvas = document.getElementById('myCanvas');
+  context = new Context(myCanvas.width, myCanvas.height);
+
+  var colors = ["red", "green"];
+
+  var i;
+  for (i = 0; i < 2; i++) {
+    var team = context.createTeam(colors[i]);
+    var j;
+    for (j = 0; j < 2; j++) {
+      var warrior = new Warrior();
+      warrior.position = context.findAvailablePosition(warrior.radius);
+      team.addWarrior(warrior);
+    }
+  }
+
+  // Draw the inital state of the arena
+  context.draw(document.getElementById('myCanvas'));
+
+  const worker = new Worker("js/Test.js?id=" + Math.random());
+  worker.onmessage = function(e) {
+    if (e.data.length == 0 || e.data[0] != "REFRESH") {
+      setTimeout(mainLoop, context.getDelay(), worker, context);
+    }
+    context.draw(document.getElementById('myCanvas'));
+  }
+
+  if (window.confirm("Should start the loop?")) {
+    setTimeout(mainLoop, 0, worker, context);
+  }
+}
+
+function mainLoop(worker, context) {
+  worker.postMessage("TURN");
+}
+
+</script>
+
+</header>
+
+<body onload="initiate()">
+
+
+
+<canvas id="myCanvas" width="800" height="400"></canvas>
+
+</body>
+</html>
